@@ -8,7 +8,7 @@ module.exports = function(app, db) {
     
     app.route('/')
       .get(function (req, res) {
-        res.send('Hello World! asdfsaf');
+        res.sendFile(process.cwd() + '/public/index.html');
       });
     
     app.route('/api/imagesearch/:offset')

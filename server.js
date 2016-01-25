@@ -1,16 +1,24 @@
 'use strict'
 
 var express = require('express');
+var routes = require('./app/routes/index.js');
+var mongo = require('mongodb').MongoClient;
 
 var app = express();
 
-var appID = 'Qu4s8xr1dl/1b8ZxSfaX0d9HYFgxs1lkNrXYdtE2p/E';
+routes(app);
 
-app.route('/')
-  .get(function (req, res) {
-    res.send('Hello World!');
-  });
+mongo.connect('mongodb://localhost:27017/imgsearch', function (err, db) {
+    if (err) {
+        throw new Error('Database failed to connect.');
+    } else {
+        console.log('MongoDB successfully connected on port 27017.')
+    }
+    
+    routes(app, db);
 
-app.listen(8080, function () {
+    app.listen(8080, function () {
         console.log('Listening on port 8080...');
     });
+    
+})

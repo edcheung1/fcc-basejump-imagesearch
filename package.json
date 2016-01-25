@@ -7,6 +7,7 @@
   "dependencies": {
     "async": "~0.2.8",
     "express": "^4.0.0",
+    "mongodb": "^2.1.4",
     "node-bing-api": "^2.3.0",
     "socket.io": "~0.9.14"
   },

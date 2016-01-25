@@ -6,8 +6,6 @@ var mongo = require('mongodb').MongoClient;
 
 var app = express();
 
-routes(app);
-
 mongo.connect('mongodb://localhost:27017/imgsearch', function (err, db) {
     if (err) {
         throw new Error('Database failed to connect.');

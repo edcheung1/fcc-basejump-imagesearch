@@ -13,9 +13,10 @@ module.exports = function(app, db) {
     
     app.route('/api/imagesearch/:offset')
         .get(function (req, res) {
-            console.log(req.params.offset);
-            console.log(req.query.offset);
-            Bing.images(req.params.offset, {top: 10, skip: req.query.offset}, function (err, response, body) {
+            var query = req.params.offset;
+            var offset = req.query.offset || 0;
+            console.log(offset);
+            Bing.images(query, {top: 10, skip: offset}, function (err, response, body) {
                 if(err) {
                     throw err;
                 }
@@ -29,6 +30,9 @@ module.exports = function(app, db) {
                     currRes.context = result.SourceUrl;
                     allRes.push(currRes);
                 });
+                console.log(getTimestamp());
+                
+                imgCollect.insertOne({term: query, when: getTimestamp()});
                 
                 res.send(allRes);
             });
@@ -36,9 +40,24 @@ module.exports = function(app, db) {
         
     app.route('/api/latest/imagesearch')
         .get(function (req, res) {
-            
+            imgCollect.find({}, {_id: 0}).sort({when: -1}).limit(10).toArray(function (err, docs) {
+                if (err) {
+                       throw err;
+                   }
+                   
+                   if (docs) {
+                       res.send(docs);
+                   }
+            });
             
             
         })
     
 };
+
+function getTimestamp() {
+    var t = new Date();
+    
+    return t.getFullYear()+"-"+(t.getMonth()+1)+"-"+t.getDate()+" "+t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+    
+}
